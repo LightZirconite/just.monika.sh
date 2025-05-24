@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Monika Streaming</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #18181b;
+            color: white;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background: #22c55e; }
+        .error { background: #ef4444; }
+        .warning { background: #f59e0b; }
+    </style>
+</head>
+<body>
+    <h1>🎬 Test Monika Streaming</h1>
+    
+    <div id="status">
+        <p>Test en cours...</p>
+    </div>
+
+    <script>
+        async function testServices() {
+            const status = document.getElementById('status');
+            let html = '<h2>État des services :</h2>';
+
+            // Test Frontend
+            try {
+                const frontendResponse = await fetch('http://localhost:3000/');
+                if (frontendResponse.ok) {
+                    html += '<div class="status success">✅ Frontend : Opérationnel (Port 3000)</div>';
+                } else {
+                    html += '<div class="status error">❌ Frontend : Erreur HTTP ' + frontendResponse.status + '</div>';
+                }
+            } catch (e) {
+                html += '<div class="status error">❌ Frontend : Non accessible (http://localhost:3000)</div>';
+            }
+
+            // Test Backend API
+            try {
+                const backendResponse = await fetch('http://localhost:3001/api/health');
+                if (backendResponse.ok) {
+                    const data = await backendResponse.json();
+                    html += '<div class="status success">✅ Backend API : Opérationnel (Port 3001)</div>';
+                    html += '<div class="status success">📊 Statut API : ' + data.status + '</div>';
+                } else {
+                    html += '<div class="status error">❌ Backend API : Erreur HTTP ' + backendResponse.status + '</div>';
+                }
+            } catch (e) {
+                html += '<div class="status error">❌ Backend API : Non accessible (http://localhost:3001/api/health)</div>';
+            }
+
+            // Test Backend Videos
+            try {
+                const videosResponse = await fetch('http://localhost:3001/api/videos');
+                if (videosResponse.ok) {
+                    const videos = await videosResponse.json();
+                    html += '<div class="status success">📹 API Vidéos : ' + videos.length + ' vidéos disponibles</div>';
+                } else {
+                    html += '<div class="status warning">⚠️ API Vidéos : Erreur HTTP ' + videosResponse.status + '</div>';
+                }
+            } catch (e) {
+                html += '<div class="status warning">⚠️ API Vidéos : Non accessible</div>';
+            }
+
+            html += '<h3>Liens rapides :</h3>';
+            html += '<p><a href="http://localhost:3000" style="color: #3b82f6;">🎬 Frontend Monika Streaming</a></p>';
+            html += '<p><a href="http://localhost:3001/api/health" style="color: #10b981;">🔧 API Health Check</a></p>';
+            html += '<p><a href="http://localhost:3001/api/videos" style="color: #f59e0b;">📹 API Vidéos</a></p>';
+
+            status.innerHTML = html;
+        }
+
+        // Lancer le test au chargement
+        testServices();
+        
+        // Relancer le test toutes les 10 secondes
+        setInterval(testServices, 10000);
+    </script>
+</body>
+</html>
