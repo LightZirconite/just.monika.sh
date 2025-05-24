@@ -1,0 +1,12 @@
+# Vidéo de test
+
+Créons un petit fichier HTML pour simuler une vidéo de test et valider le système.
+
+Pour ajouter de vraies vidéos :
+1. Placez vos fichiers .mp4, .webm ou .ogv dans ce dossier
+2. Les noms des fichiers seront utilisés comme titres
+3. L'API les détectera automatiquement
+
+Exemple :
+- mon-film.mp4 → "Mon Film"
+- documentaire-nature.webm → "Documentaire Nature"
